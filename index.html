@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dashboard interativo e análise estratégica das 10 maiores empresas de mármore, granito e rochas ornamentais no Brasil.">
+    <meta name="keywords" content="Mármores, Granitos, Quartzitos, Rochas Ornamentais, Espírito Santo, Guidoni, Decolores, Vitória Stone, Zucchi, Marbrasa">
+    <title>Top 10 Empresas de Rochas Ornamentais - Dashboard Analítico</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="luxury-bg-glow"></div>
+    
+    <header class="app-header">
+        <div class="container header-container">
+            <div class="logo-area">
+                <div class="logo-symbol">
+                    <span class="symbol-inner"></span>
+                </div>
+                <div class="logo-text">
+                    <h1>MARBLE<span>&amp;</span>GRANITE</h1>
+                    <p>ANALYSIS PLATFORM</p>
+                </div>
+            </div>
+            
+            <div class="header-tag">
+                <span class="badge badge-gold"><i class="fa-solid fa-crown"></i> TOP 10 PLAYERS</span>
+                <span class="badge badge-outline">POLO NACIONAL (ES)</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Live Market Rates Widget -->
+        <div class="live-rates-bar" id="liveRatesBar">
+            <span class="rates-title"><i class="fa-solid fa-chart-line"></i> Indicadores do Mercado Exportador (Tempo Real):</span>
+            <span class="rate-item"><i class="fa-solid fa-dollar-sign"></i> Dólar (USD): <strong id="usdRate">Carregando...</strong> <span id="usdPct" class="rate-pct"></span></span>
+            <span class="rate-item"><i class="fa-solid fa-euro-sign"></i> Euro (EUR): <strong id="eurRate">Carregando...</strong> <span id="eurPct" class="rate-pct"></span></span>
+            <span class="rate-update"><i class="fa-solid fa-clock"></i> Última Atualização: <span id="ratesTimestamp">--:--</span></span>
+        </div>
+
+        <!-- KPI Dashboard Section -->
+        <section class="kpi-grid">
+            <div class="kpi-card" id="kpi-companies">
+                <div class="kpi-icon"><i class="fa-solid fa-industry"></i></div>
+                <div class="kpi-info">
+                    <h3>10</h3>
+                    <p>Grandes Players Analisados</p>
+                </div>
+            </div>
+            
+            <div class="kpi-card" id="kpi-hub">
+                <div class="kpi-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+                <div class="kpi-info">
+                    <h3>4</h3>
+                    <p>Polos Produtivos (ES)</p>
+                </div>
+            </div>
+            
+            <div class="kpi-card" id="kpi-quarries">
+                <div class="kpi-icon"><i class="fa-solid fa-mountain"></i></div>
+                <div class="kpi-info">
+                    <h3>120+</h3>
+                    <p>Jazidas Ativas Estimadas</p>
+                </div>
+            </div>
+            
+            <div class="kpi-card" id="kpi-export">
+                <div class="kpi-icon"><i class="fa-solid fa-earth-americas"></i></div>
+                <div class="kpi-info">
+                    <h3>80+</h3>
+                    <p>Países de Destino</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Section -->
+        <section class="charts-section">
+            <div class="card chart-card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-chart-pie"></i> Concentração por Polo Geográfico</h2>
+                    <p>Distribuição das sedes industriais dos maiores players no ES</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="hubChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="card chart-card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-chart-column"></i> Perfil do Portfólio de Materiais</h2>
+                    <p>Especialidade e foco produtivo ponderado entre as empresas</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="materialsChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Workspace Filter Controls -->
+        <section class="controls-section card">
+            <div class="filter-bar">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="Pesquisar por nome da empresa ou materiais...">
+                </div>
+                
+                <div class="filters-group">
+                    <div class="filter-select">
+                        <label for="filterCity"><i class="fa-solid fa-city"></i> Cidade</label>
+                        <select id="filterCity">
+                            <option value="all">Todas as Cidades</option>
+                            <option value="Serra">Serra</option>
+                            <option value="Cachoeiro de Itapemirim">Cachoeiro de Itapemirim</option>
+                            <option value="Castelo">Castelo</option>
+                            <option value="São Domingos do Norte">São Domingos do Norte</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-select">
+                        <label for="filterMaterial"><i class="fa-solid fa-gem"></i> Especialidade</label>
+                        <select id="filterMaterial">
+                            <option value="all">Todos os Materiais</option>
+                            <option value="Quartzito">Quartzitos Exóticos</option>
+                            <option value="Granito">Granitos Premium</option>
+                            <option value="Mármore">Mármores Nobres</option>
+                            <option value="Superfícies de Quartzo">Sintéticos / Quartzo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Company Cards Grid -->
+        <section class="companies-grid" id="companiesGrid">
+            <!-- Cards generated dynamically via JavaScript -->
+        </section>
+
+        <!-- Data Comparison Table Section -->
+        <section class="card table-card">
+            <div class="card-header table-header-flex">
+                <div>
+                    <h2><i class="fa-solid fa-list-check"></i> Matriz de Comparação Direta</h2>
+                    <p>Ficha comparativa das 10 principais mineradoras e indústrias</p>
+                </div>
+                <button class="btn btn-outline" id="btnResetFilters"><i class="fa-solid fa-rotate-left"></i> Limpar Filtros</button>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="luxury-table" id="comparisonTable">
+                    <thead>
+                        <tr>
+                            <th>Empresa</th>
+                            <th>Sede</th>
+                            <th>Principais Materiais</th>
+                            <th>Destaque Comercial</th>
+                            <th>Ano de Fundação</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Table rows generated dynamically via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Strategic Market Analysis (SWOT & Trends) -->
+        <section class="card analysis-card">
+            <div class="card-header">
+                <h2><i class="fa-solid fa-compass"></i> Análise Estratégica &amp; Tendências do Setor</h2>
+                <p>Inteligência de mercado sobre o avanço das rochas ornamentais capixabas</p>
+            </div>
+            
+            <div class="analysis-tabs">
+                <button class="tab-btn active" data-tab="swot">Matriz SWOT Setorial</button>
+                <button class="tab-btn" data-tab="trends">Tendências de Quartzitos</button>
+                <button class="tab-btn" data-tab="tech">Tecnologia &amp; Sustentabilidade</button>
+            </div>
+            
+            <div class="tab-content active" id="tab-swot">
+                <div class="swot-grid">
+                    <div class="swot-box swot-s">
+                        <h3><i class="fa-solid fa-shield-halved"></i> FORÇAS (S)</h3>
+                        <ul>
+                            <li>Maior variedade cromática e geológica de quartzitos do mundo.</li>
+                            <li>Verticalização robusta das principais empresas com pedreiras próprias.</li>
+                            <li>Parque industrial tecnológico avançado (teares multifios e resinagem a vácuo).</li>
+                        </ul>
+                    </div>
+                    <div class="swot-box swot-w">
+                        <h3><i class="fa-solid fa-triangle-exclamation"></i> FRAQUEZAS (W)</h3>
+                        <ul>
+                            <li>Forte dependência do frete rodoviário e infraestrutura portuária.</li>
+                            <li>Elevada carga tributária sobre importação de insumos químicos (resinas premium).</li>
+                            <li>Subutilização histórica de resíduos brutos de corte e beneficiamento.</li>
+                        </ul>
+                    </div>
+                    <div class="swot-box swot-o">
+                        <h3><i class="fa-solid fa-arrow-up-right-dots"></i> OPORTUNIDADES (O)</h3>
+                        <ul>
+                            <li>Boom global de quartzitos exóticos substituindo mármores frágeis.</li>
+                            <li>Ampliação da presença em mercados em expansão rápida no Oriente Médio e Ásia.</li>
+                            <li>Posicionamento sustentável da pedra natural frente aos revestimentos plásticos/cerâmicos.</li>
+                        </ul>
+                    </div>
+                    <div class="swot-box swot-t">
+                        <h3><i class="fa-solid fa-skull-crossbones"></i> AMEAÇAS (T)</h3>
+                        <ul>
+                            <li>Crescimento de materiais sintéticos artificiais de baixo custo da China.</li>
+                            <li>Instabilidade do frete marítimo global e flutuações das tarifas alfandegárias.</li>
+                            <li>Volatilidade cambial afetando contratos de exportação de longo prazo.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="tab-trends">
+                <div class="trends-content">
+                    <div class="trends-text">
+                        <h3>O Domínio do Quartzito na Arquitetura de Alto Padrão</h3>
+                        <p>O quartzito deixou de ser apenas uma alternativa ao granito para se tornar o <strong>material mais cobiçado pela arquitetura contemporânea mundial</strong>. Rochas de jazidas brasileiras de quartzitos exóticos e super exóticos, como o lendário <em>Taj Mahal</em>, <em>Da Vinci</em> e <em>Victoria Regia</em>, lideram as exportações e ditam as tendências em feiras internacionais como a de Verona (Marmomac) e a de Orlando (Coverings).</p>
+                        <p>Fisicamente constituído de grãos de quartzo altamente compactados por processos metamórficos, o quartzito tem <strong>dureza Mohs ~7</strong> (maior do que o aço comum), o que o torna ideal para bancadas de cozinhas residenciais e áreas gourmet, locais onde os mármores clássicos costumam manchar e riscar com facilidade.</p>
+                    </div>
+                    <div class="trends-showcase">
+                        <div class="stone-sample-card">
+                            <div class="stone-texture taj-mahal"></div>
+                            <div class="stone-info">
+                                <h4>Quartzito Taj Mahal</h4>
+                                <p>Fundo creme suave com veios dourados e cristais finos. O queridinho dos arquitetos norte-americanos.</p>
+                            </div>
+                        </div>
+                        <div class="stone-sample-card">
+                            <div class="stone-texture da-vinci"></div>
+                            <div class="stone-info">
+                                <h4>Quartzito Da Vinci</h4>
+                                <p>Tons cinza-esverdeados com veios profundos e textura rica, oferecendo alto luxo visual.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="tab-tech">
+                <div class="tech-content-grid">
+                    <div class="tech-box">
+                        <div class="tech-icon"><i class="fa-solid fa-scissors"></i></div>
+                        <h4>Teares Multifios de Alta Performance</h4>
+                        <p>A substituição progressiva dos antigos teares de lâminas de aço por teares multifios diamantados aumentou a velocidade de corte de blocos de rocha em mais de 10 vezes. Isso permitiu reduzir drasticamente o consumo de energia por chapa produzida, além de conferir uma espessura muito mais uniforme e regular às chapas.</p>
+                    </div>
+                    <div class="tech-box">
+                        <div class="tech-icon"><i class="fa-solid fa-droplet-slash"></i></div>
+                        <h4>Resinagem Automática a Vácuo</h4>
+                        <p>Consiste na aplicação sob vácuo de resinas epóxi líquidas de altíssima penetração estrutural. Esse tratamento preenche as microfissuras e porosidades naturais da rocha, consolidando as chapas exóticas estruturalmente e potencializando o brilho espelhado final pós-polimento.</p>
+                    </div>
+                    <div class="tech-box">
+                        <div class="tech-icon"><i class="fa-solid fa-recycle"></i></div>
+                        <h4>Processamento Sustentável</h4>
+                        <p>As 10 maiores empresas adotam hoje sistemas de ciclo fechado para tratamento e reutilização de 95% a 98% da água utilizada nas serrarias. Adicionalmente, as sobras brutas de cortes estão sendo trituradas para virar agregados em pavimentação asfáltica e fabricação de novas rochas reconstituídas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Company Detail Modal -->
+    <div class="modal-overlay" id="companyModal">
+        <div class="modal-card">
+            <button class="modal-close" id="modalClose"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-body" id="modalBody">
+                <!-- Data populated dynamically via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <div class="container footer-container">
+            <p>&copy; 2026 Plataforma de Análise de Rochas Ornamentais. Desenvolvido para Anderson Lima.</p>
+            <p class="footer-subtext">Fontes de dados de referência: Centrorochas, ABIROCHAS, SindiRochas/ES, e Portfólios Oficiais das Empresas.</p>
+        </div>
+    </footer>
+
+    <!-- Custom App Logic Script -->
+    <script src="app.js"></script>
+</body>
+</html>
